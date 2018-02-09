@@ -52,7 +52,8 @@ def main(anything_i_pass_to_this_program):
         # for line in f:
             # print("links to download: ", line)
     with zipfile.ZipFile(FILENAME, 'r') as my_zip_file:
-        print(my_zip_file.namelist())
+        for j in my_zip_file:
+            print(j.my_zip_file.namelist())
         # for i, xml_file in enumerate(my_zip_file.namelist()):
         #    dd = io.TextIOWrapper(my_zip_file.open(xml_file))
         #    print(i)
@@ -66,3 +67,4 @@ def main(anything_i_pass_to_this_program):
 
 # if __name__ == "__main__":
     # main(sys.argv)
+retrieve_urls(FILENAME)
