@@ -6,10 +6,7 @@ import sys
 import csv
 
 
-FILENAME = ('BILLS-115-2-hconres.zip', 'BILLS-115-2-hjres.zip',
-            'BILLS-115-2-hr.zip', 'BILLS-115-2-hres.zip',
-            'BILLS-115-2-s.zip', 'BILLS-115-2-sconres.zip',
-            'BILLS-115-2-sjres.zip', 'BILLS-115-2-sres.zip')
+FILENAME = ('BILLS-115-2-hconres.zip')
 
 
 def retrieve_urls(filename):
@@ -17,13 +14,6 @@ def retrieve_urls(filename):
         data = req.urlretrieve(
             # these urls refer only to "Congressional Bills" "115th" "2nd"
             'https://www.govinfo.gov/bulkdata/BILLS/115/2/hconres/BILLS-115-2-hconres.zip',
-            'https://www.govinfo.gov/bulkdata/BILLS/115/2/hconres/BILLS-115-2-hjres.zip',
-            'https://www.govinfo.gov/bulkdata/BILLS/115/2/hconres/BILLS-115-2-hr.zip',
-            'https://www.govinfo.gov/bulkdata/BILLS/115/2/hconres/BILLS-115-2-hres.zip',
-            'https://www.govinfo.gov/bulkdata/BILLS/115/2/hconres/BILLS-115-2-s.zip',
-            'https://www.govinfo.gov/bulkdata/BILLS/115/2/hconres/BILLS-115-2-sconres.zip',
-            'https://www.govinfo.gov/bulkdata/BILLS/115/2/hconres/BILLS-115-2-sjres.zip',
-            'https://www.govinfo.gov/bulkdata/BILLS/115/2/hconres/BILLS-115-2-sres.zip',
             filename=filename)
     except req.URLError as e:
         raise  # flags any URLError errors to user upstream
@@ -52,8 +42,7 @@ def main(anything_i_pass_to_this_program):
         # for line in f:
             # print("links to download: ", line)
     with zipfile.ZipFile(FILENAME, 'r') as my_zip_file:
-        for j in my_zip_file:
-            print(j.my_zip_file.namelist())
+        print(my_zip_file.namelist())
         # for i, xml_file in enumerate(my_zip_file.namelist()):
         #    dd = io.TextIOWrapper(my_zip_file.open(xml_file))
         #    print(i)
