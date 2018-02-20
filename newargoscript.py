@@ -1,6 +1,7 @@
 import zipfile
 import urllib.request as req
 import xml.etree.ElementTree as ET
+import glob
 import io
 import sys
 import csv
@@ -18,18 +19,22 @@ def retrieve_urls(filename):
 
 
 def read_xml(xml_files):
-    xml_string = str(xml_files)  # converts 'NoneType' to string object
-    legis_num = ET.parse('BILLS-115hconres98eh.xml')  # where I currently am
-    root = legis_num.getroot()
-    # purpose = r.xml_document.xpath('//official-title').text
-    # print(legis_num.read())
+    xml_files = glob.glob('*.xml')
+    for x in xml_files:
+        with open(x, 'r', encoding='utf8') as xml_parse:
+            tree = ET.parse(xml_parse)
+            legis_num = tree.findall('resolution/form')
+            for lenu in legis_num:
+                print(lenu.find('legis-num').text)
 
 
 def main(filename):
     with zipfile.ZipFile(FILENAME, 'r') as raw_zip:
         xml_files = zipfile.ZipFile.extractall(raw_zip)
-        # print(xml_files)
         read_xml(xml_files)
 
+
+if __name__ == '__main__':
+    main(sys.argv)
 
 retrieve_urls(FILENAME)
