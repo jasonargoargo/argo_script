@@ -3,6 +3,7 @@ import zipfile
 import urllib.request as req
 import xml.etree.ElementTree as ET
 import glob
+import io
 import sys
 import os
 
@@ -17,7 +18,7 @@ def main(anything):
 def retrieve_urls(filename):
     try:
         data = req.urlretrieve('https://www.govinfo.gov/bulkdata/BILLS/115/2/hconres/BILLS-115-2-hconres.zip',
-                               filename=filename)
+                               filename=filename)  # for BILLS (for now)
         open_zip(filename)
     except req.URLError as e:
         raise
@@ -34,13 +35,39 @@ def read_xml(xml_files):
     xml_files = glob.glob('*.xml')
     for x in xml_files:
         # try:
-        with open(x, 'r', encoding='utf8') as xml_parse:
+        with open(x, 'r', encoding='utf8') as raw_xml:
+            no_spaces = [line.rstrip('\n') for line in raw_xml]
+            xml_parse = io.StringIO(''.join(no_spaces))
             legis_num = []
             for event, elem in ET.iterparse(xml_parse):
                 if event == 'end':
                     if elem.tag == 'legis-num':
                         legis_num.append(elem.text)
                         print(legis_num)
+                elem.clear()
+            xml_parse.seek(0)
+            congress = []
+            for event, elem in ET.iterparse(xml_parse):
+                if event == 'end':
+                    if elem.tag == 'congress':
+                        congress.append(elem.text)
+                        print(congress)
+                elem.clear()
+            xml_parse.seek(0)
+            session = []
+            for event, elem in ET.iterparse(xml_parse):
+                if event == 'end':
+                    if elem.tag == 'session':
+                        session.append(elem.text)
+                        print(session)
+                elem.clear()
+            xml_parse.seek(0)
+            text = []
+            for event, elem in ET.iterparse(xml_parse):
+                if event == 'end':
+                    if elem.tag == 'text':
+                        text.append(elem.text)
+                        print(text)
                 elem.clear()
     remove_files(xml_files)
     push_to_db(legis_num)
@@ -53,7 +80,7 @@ def remove_files(file):
         os.remove(x)
 
 
-def push_to_db(legis_num):
+def push_to_db(legis_num, congress, session, text):
     success = bool
     if success:
         return 1
