@@ -88,9 +88,10 @@ def read_xml(xml_files):
                                 'At the Second Session', '2nd'))
                         else:
                             print('You missed a session!')
-                elif elem.tag == 'resolution-body' and event == 'end':
-                    pass  # stuck here
-                # AMENDMENTS
+                elif elem.tag == 'resolution-body' and event == 'start':
+                    hconres_text.append(''.join('resolution-body'.itertext()))
+                    print(hconres_text)
+                # AMENDMENT
                 elif elem.tag == 'amendment-doc' and event == 'end':
                     amend_number.append(elem.get('legis-num'))
                     amend_degree.append(elem.get('amend-degree'))
@@ -132,7 +133,7 @@ def read_xml(xml_files):
                         else:
                             print('You missed an origin!')
                 # elif elem.tag == 'text' and event == 'end':
-                    pass  # stuck here
+                    pass
             elem.clear()
             # print(hconres_dms_id)
             # print(hconres_number)
@@ -143,7 +144,6 @@ def read_xml(xml_files):
             # print(hconres_type)
             # print(hconres_origin)
             # print(hconres_pub_pri)
-            # print(hconres_text)
     remove_files(xml_files)
     push_to_db(hconres_dms_id, hconres_number, hconres_title, hconres_congress,
                hconres_session, hconres_stage, hconres_type, hconres_origin, hconres_pub_pri, hconres_text)
