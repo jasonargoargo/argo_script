@@ -17,7 +17,7 @@ def main(anything):
 def retrieve_urls(filename):
     try:
         data = req.urlretrieve('https://www.govinfo.gov/bulkdata/BILLS/115/2/hconres/BILLS-115-2-hconres.zip',
-                               filename=filename)  # for BILLS (for now)
+                               filename=filename)
         open_zip(filename)
     except req.URLError as e:
         raise
@@ -88,9 +88,16 @@ def read_xml(xml_files):
                                 'At the Second Session', '2nd'))
                         else:
                             print('You missed a session!')
-                elif elem.tag == 'resolution-body' and event == 'start':
-                    hconres_text.append(''.join('resolution-body'.itertext()))
-                    print(hconres_text)
+                elif elem.tag == 'text' or elem.tag == 'quote' or elem.tag == 'enum' or elem.tag == 'division' or elem.tag == 'header' or elem.tag == 'quoted-block' or elem.tag == 'after-quoted-block' or elem.tag == 'paragraph' and event == 'end':
+                    if elem.text is not None and elem.text != ' ':
+                        temp_list = []
+                        temp_list.append(elem.text)
+                        # returning last index results in one cacatenated element not distinguished from xml files
+                        hconres_text = temp_list
+                        print(hconres_text)
+                    elif elem.tag == 'division':
+                        if elem.text is None:
+                            pass  # need a way to replace None with string 'Division' then append to hconres_text
                 # AMENDMENT
                 elif elem.tag == 'amendment-doc' and event == 'end':
                     amend_number.append(elem.get('legis-num'))
@@ -132,21 +139,13 @@ def read_xml(xml_files):
                                 'U.S. House of Representatives', 'House'))
                         else:
                             print('You missed an origin!')
-                # elif elem.tag == 'text' and event == 'end':
-                    pass
+                elif elem.tag == 'amendment-doc':
+                    if elem.tag == 'text' and event == 'end':
+                        pass
             elem.clear()
-            # print(hconres_dms_id)
-            # print(hconres_number)
-            # print(hconres_title)
-            # print(hconres_congress)
-            # print(hconres_session)
-            # print(hconres_stage)
-            # print(hconres_type)
-            # print(hconres_origin)
-            # print(hconres_pub_pri)
     remove_files(xml_files)
     push_to_db(hconres_dms_id, hconres_number, hconres_title, hconres_congress,
-               hconres_session, hconres_stage, hconres_type, hconres_origin, hconres_pub_pri, hconres_text)
+               hconres_session, hconres_stage, hconres_type, hconres_origin, hconres_pub_pri, hconres_text, amend_number, amend_congress, amend_session, amend_stage, amend_degree, amend_type, amend_origin, amend_text)
 
 
 def remove_files(file):
@@ -154,7 +153,7 @@ def remove_files(file):
         os.remove(x)
 
 
-def push_to_db(dms_id, legis_num, official_title, congress, session, resolution_stage, resolution_type, origin, public_private, hconres_text):
+def push_to_db(dms_id, legis_num, official_title, congress, session, resolution_stage, resolution_type, origin, public_private, hconres_text, amend_number, amend_congress, amend_session, amend_stage, amend_degree, amend_type, amend_origin, amend_text):
     success = bool
     if success:
         return 1
