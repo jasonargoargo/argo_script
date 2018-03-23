@@ -529,16 +529,10 @@ def push_to_db(whatever):
 
 
 def csv_file(number, session, stage):
-    global number
-    global session
-    global stage
-    global text
     with open('BILLS.csv', 'w') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(['Number', 'Session', 'Stage'])
-        writer.writerow(number)
-        writer.writerow(session)
-        writer.writerow(stage)
+        # ???
 
 
 if __name__ == '__main__':
@@ -553,6 +547,8 @@ if __name__ == '__main__':
 # BILLS_dict = dict(zip(number, stage))
 # for key, value in sorted(BILLS_dict.items()):
 #     print(key, value)
+# BILLS_list = zip(number, session, stage)
+# print(BILLS_list)
 # print(len(number))
 # print(len(session))
 # print(len(stage))
