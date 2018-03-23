@@ -512,6 +512,7 @@ def read_xml_s(xml_files, type):
                     elem.clear
     remove_files(xml_files)
     remove_files(zip_files)
+    csv_file(number, session, stage)
 
 
 def remove_files(file):
@@ -527,11 +528,17 @@ def push_to_db(whatever):
         return 0
 
 
-def csv_file(???):
-    with open('BILLS.csv', 'w', newline='') as csvfile:
+def csv_file(number, session, stage):
+    global number
+    global session
+    global stage
+    global text
+    with open('BILLS.csv', 'w') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(['Number', 'Session', 'Stage'])
-        writer.writerows(number, session, stage)
+        writer.writerow(number)
+        writer.writerow(session)
+        writer.writerow(stage)
 
 
 if __name__ == '__main__':
@@ -549,4 +556,3 @@ if __name__ == '__main__':
 # print(len(number))
 # print(len(session))
 # print(len(stage))
-print(dir(number))
