@@ -1,3 +1,4 @@
+#!/jasonargo/anaconda3/bin/python
 import zipfile
 import urllib.request as req
 import xml.etree.ElementTree as ET
@@ -41,30 +42,26 @@ def open_zip(filename, type):
     with zipfile.ZipFile(filename, 'r') as raw_zip:
         xml_files = zipfile.ZipFile.extractall(raw_zip)
         if type == 'hconres':
-            read_xml_hconres(xml_files, type)
+            read_xml_hconres(xml_files, type, number, session, stage)
         elif type == 'hjres':
-            read_xml_hjres(xml_files, type)
+            read_xml_hjres(xml_files, type, number, session, stage)
         elif type == 'hres':
-            read_xml_hres(xml_files, type)
+            read_xml_hres(xml_files, type, number, session, stage)
         elif type == 'hr':
-            read_xml_hr(xml_files, type)
+            read_xml_hr(xml_files, type, number, session, stage)
         elif type == 'sconres':
-            read_xml_sconres(xml_files, type)
+            read_xml_sconres(xml_files, type, number, session, stage)
         elif type == 'sjres':
-            read_xml_sjres(xml_files, type)
+            read_xml_sjres(xml_files, type, number, session, stage)
         elif type == 'sres':
-            read_xml_sres(xml_files, type)
+            read_xml_sres(xml_files, type, number, session, stage)
         elif type == 's':
-            read_xml_s(xml_files, type)
+            read_xml_s(xml_files, type, number, session, stage)
 
 
-def read_xml_hconres(xml_files, type):
+def read_xml_hconres(xml_files, type, number, session, stage):
     xml_files = glob.glob('BILLS-115hconres*.xml')
     zip_files = glob.glob('BILLS-115-?-hconres.zip')
-    global number
-    global session
-    global stage
-    global text
     for x in xml_files:
         with open(x, 'r', encoding='utf8') as hconres_xml:
             for event, elem in ET.iterparse(hconres_xml):
@@ -97,31 +94,26 @@ def read_xml_hconres(xml_files, type):
                 elif elem.tag == 'session' or elem.tag == 'form' and event == 'end':
                     if elem.tag == 'session':
                         try:
-                            session.append(elem.text.replace(
-                                'At the First Session', '1st Session').replace('2d Session', '2nd Session').replace('At the Second Session', '2nd Session'))
+                            session.append(''.join(elem.text.replace('At the First Session', '1st').replace('1st Session', '1st').replace(' 2d Session', '2nd').replace('2d Session', '2nd').replace(' 2nd Session', '2nd').replace('2d  Session', '2nd').replace('At the Second Session', '2nd')))
                         except AttributeError:
                             print('hconres-session')
                             continue
                 elif elem.tag == 'session' or elem.tag == 'engrossed-amendment-form' and event == 'end':
                     if elem.tag == 'session':
                         try:
-                            session.append(elem.text.replace(
-                                'At the First Session', '1st Session').replace('2d Session', '2nd Session').replace('At the Second Session', '2nd Session'))
+                            session.append(''.join(elem.text.replace('At the First Session', '1st').replace('1st Session', '1st').replace(' 2d Session', '2nd').replace('2d Session', '2nd').replace(' 2nd Session', '2nd').replace('2d  Session', '2nd').replace('At the Second Session', '2nd')))
                         except AttributeError:
                             print('hconres-session')
                             continue
                     elem.clear
     remove_files(xml_files)
     remove_files(zip_files)
+    csv_file(number, session, stage)
 
 
-def read_xml_hjres(xml_files, type):
+def read_xml_hjres(xml_files, type, number, session, stage):
     xml_files = glob.glob('BILLS-115hjres*.xml')
     zip_files = glob.glob('BILLS-115-?-hjres.zip')
-    global number
-    global session
-    global stage
-    global text
     for x in xml_files:
         with open(x, 'r', encoding='utf8') as hjres_xml:
             for event, elem in ET.iterparse(hjres_xml):
@@ -154,31 +146,26 @@ def read_xml_hjres(xml_files, type):
                 elif elem.tag == 'session' or elem.tag == 'form' and event == 'end':
                     if elem.tag == 'session':
                         try:
-                            session.append(elem.text.replace(
-                                'At the First Session', '1st Session').replace('2d Session', '2nd Session').replace('At the Second Session', '2nd Session'))
+                            session.append(''.join(elem.text.replace('At the First Session', '1st').replace('1st Session', '1st').replace(' 2d Session', '2nd').replace('2d Session', '2nd').replace(' 2nd Session', '2nd').replace('2d  Session', '2nd').replace('At the Second Session', '2nd')))
                         except AttributeError:
                             print('hjres-session')
                             continue
                 elif elem.tag == 'session' or elem.tag == 'engrossed-amendment-form' and event == 'end':
                     if elem.tag == 'session':
                         try:
-                            session.append(elem.text.replace(
-                                'At the First Session', '1st Session').replace('2d Session', '2nd Session').replace('At the Second Session', '2nd Session'))
+                            session.append(''.join(elem.text.replace('At the First Session', '1st').replace('1st Session', '1st').replace(' 2d Session', '2nd').replace('2d Session', '2nd').replace(' 2nd Session', '2nd').replace('2d  Session', '2nd').replace('At the Second Session', '2nd')))
                         except AttributeError:
                             print('hjres-session')
                             continue
                     elem.clear
     remove_files(xml_files)
     remove_files(zip_files)
+    csv_file(number, session, stage)
 
 
-def read_xml_hres(xml_files, type):
+def read_xml_hres(xml_files, type, number, session, stage):
     xml_files = glob.glob('BILLS-115hres*.xml')
     zip_files = glob.glob('BILLS-115-?-hres.zip')
-    global number
-    global session
-    global stage
-    global text
     for x in xml_files:
         with open(x, 'r', encoding='utf8') as hres_xml:
             for event, elem in ET.iterparse(hres_xml):
@@ -211,31 +198,26 @@ def read_xml_hres(xml_files, type):
                 elif elem.tag == 'session' or elem.tag == 'form' and event == 'end':
                     if elem.tag == 'session':
                         try:
-                            session.append(elem.text.replace(
-                                'At the First Session', '1st Session').replace('2d Session', '2nd Session').replace('At the Second Session', '2nd Session'))
+                            session.append(''.join(elem.text.replace('At the First Session', '1st').replace('1st Session', '1st').replace(' 2d Session', '2nd').replace('2d Session', '2nd').replace(' 2nd Session', '2nd').replace('2d  Session', '2nd').replace('At the Second Session', '2nd')))
                         except AttributeError:
                             print('hres-session')
                             continue
                 elif elem.tag == 'session' or elem.tag == 'engrossed-amendment-form' and event == 'end':
                     if elem.tag == 'session':
                         try:
-                            session.append(elem.text.replace(
-                                'At the First Session', '1st Session').replace('2d Session', '2nd Session').replace('At the Second Session', '2nd Session'))
+                            session.append(''.join(elem.text.replace('At the First Session', '1st').replace('1st Session', '1st').replace(' 2d Session', '2nd').replace('2d Session', '2nd').replace(' 2nd Session', '2nd').replace('2d  Session', '2nd').replace('At the Second Session', '2nd')))
                         except AttributeError:
                             print('hres-session')
                             continue
                     elem.clear
     remove_files(xml_files)
     remove_files(zip_files)
+    csv_file(number, session, stage)
 
 
-def read_xml_hr(xml_files, type):
+def read_xml_hr(xml_files, type, number, session, stage):
     xml_files = glob.glob('BILLS-115hr*.xml')
     zip_files = glob.glob('BILLS-115-?-hr.zip')
-    global number
-    global session
-    global stage
-    global text
     for x in xml_files:
         with open(x, 'r', encoding='utf8') as hr_xml:
             for event, elem in ET.iterparse(hr_xml):
@@ -268,31 +250,26 @@ def read_xml_hr(xml_files, type):
                 elif elem.tag == 'session' or elem.tag == 'form' and event == 'end':
                     if elem.tag == 'session':
                         try:
-                            session.append(elem.text.replace(
-                                'At the First Session', '1st Session').replace('2d Session', '2nd Session').replace('At the Second Session', '2nd Session'))
+                            session.append(''.join(elem.text.replace('At the First Session', '1st').replace('1st Session', '1st').replace(' 2d Session', '2nd').replace('2d Session', '2nd').replace(' 2nd Session', '2nd').replace('2d  Session', '2nd').replace('At the Second Session', '2nd')))
                         except AttributeError:
                             print('hr-session')
                             continue
                 elif elem.tag == 'session' or elem.tag == 'engrossed-amendment-form' and event == 'end':
                     if elem.tag == 'session':
                         try:
-                            session.append(elem.text.replace(
-                                'At the First Session', '1st Session').replace('2d Session', '2nd Session').replace('At the Second Session', '2nd Session'))
+                            session.append(''.join(elem.text.replace('At the First Session', '1st').replace('1st Session', '1st').replace(' 2d Session', '2nd').replace('2d Session', '2nd').replace(' 2nd Session', '2nd').replace('2d  Session', '2nd').replace('At the Second Session', '2nd')))
                         except AttributeError:
                             print('hr-session')
                             continue
                     elem.clear
     remove_files(xml_files)
     remove_files(zip_files)
+    csv_file(number, session, stage)
 
 
-def read_xml_sconres(xml_files, type):
+def read_xml_sconres(xml_files, type, number, session, stage):
     xml_files = glob.glob('BILLS-115sconres*.xml')
     zip_files = glob.glob('BILLS-115-?-sconres.zip')
-    global number
-    global session
-    global stage
-    global text
     for x in xml_files:
         with open(x, 'r', encoding='utf8') as sconres_xml:
             for event, elem in ET.iterparse(sconres_xml):
@@ -325,31 +302,26 @@ def read_xml_sconres(xml_files, type):
                 elif elem.tag == 'session' or elem.tag == 'form' and event == 'end':
                     if elem.tag == 'session':
                         try:
-                            session.append(elem.text.replace(
-                                'At the First Session', '1st Session').replace('2d Session', '2nd Session').replace('At the Second Session', '2nd Session'))
+                            session.append(''.join(elem.text.replace('At the First Session', '1st').replace('1st Session', '1st').replace(' 2d Session', '2nd').replace('2d Session', '2nd').replace(' 2nd Session', '2nd').replace('2d  Session', '2nd').replace('At the Second Session', '2nd')))
                         except AttributeError:
                             print('sconres-session')
                             continue
                 elif elem.tag == 'session' or elem.tag == 'engrossed-amendment-form' and event == 'end':
                     if elem.tag == 'session':
                         try:
-                            session.append(elem.text.replace(
-                                'At the First Session', '1st Session').replace('2d Session', '2nd Session').replace('At the Second Session', '2nd Session'))
+                            session.append(''.join(elem.text.replace('At the First Session', '1st').replace('1st Session', '1st').replace(' 2d Session', '2nd').replace('2d Session', '2nd').replace(' 2nd Session', '2nd').replace('2d  Session', '2nd').replace('At the Second Session', '2nd')))
                         except AttributeError:
                             print('sconres-session')
                             continue
                     elem.clear
     remove_files(xml_files)
     remove_files(zip_files)
+    csv_file(number, session, stage)
 
 
-def read_xml_sjres(xml_files, type):
+def read_xml_sjres(xml_files, type, number, session, stage):
     xml_files = glob.glob('BILLS-115sjres*.xml')
     zip_files = glob.glob('BILLS-115-?-sjres.zip')
-    global number
-    global session
-    global stage
-    global text
     for x in xml_files:
         with open(x, 'r', encoding='utf8') as sjres_xml:
             for event, elem in ET.iterparse(sjres_xml):
@@ -382,31 +354,26 @@ def read_xml_sjres(xml_files, type):
                 elif elem.tag == 'session' or elem.tag == 'form' and event == 'end':
                     if elem.tag == 'session':
                         try:
-                            session.append(elem.text.replace(
-                                'At the First Session', '1st Session').replace('2d Session', '2nd Session').replace('At the Second Session', '2nd Session'))
+                            session.append(''.join(elem.text.replace('At the First Session', '1st').replace('1st Session', '1st').replace(' 2d Session', '2nd').replace('2d Session', '2nd').replace(' 2nd Session', '2nd').replace('2d  Session', '2nd').replace('At the Second Session', '2nd')))
                         except AttributeError:
                             print('sjres-session')
                             continue
                 elif elem.tag == 'session' or elem.tag == 'engrossed-amendment-form' and event == 'end':
                     if elem.tag == 'session':
                         try:
-                            session.append(elem.text.replace(
-                                'At the First Session', '1st Session').replace('2d Session', '2nd Session').replace('At the Second Session', '2nd Session'))
+                            session.append(''.join(elem.text.replace('At the First Session', '1st').replace('1st Session', '1st').replace(' 2d Session', '2nd').replace('2d Session', '2nd').replace(' 2nd Session', '2nd').replace('2d  Session', '2nd').replace('At the Second Session', '2nd')))
                         except AttributeError:
                             print('sjres-session')
                             continue
                     elem.clear
     remove_files(xml_files)
     remove_files(zip_files)
+    csv_file(number, session, stage)
 
 
-def read_xml_sres(xml_files, type):
+def read_xml_sres(xml_files, type, number, session, stage):
     xml_files = glob.glob('BILLS-115sres*.xml')
     zip_files = glob.glob('BILLS-115-?-sres.zip')
-    global number
-    global session
-    global stage
-    global text
     for x in xml_files:
         with open(x, 'r', encoding='utf8') as sres_xml:
             for event, elem in ET.iterparse(sres_xml):
@@ -439,31 +406,26 @@ def read_xml_sres(xml_files, type):
                 elif elem.tag == 'session' or elem.tag == 'form' and event == 'end':
                     if elem.tag == 'session':
                         try:
-                            session.append(elem.text.replace(
-                                'At the First Session', '1st Session').replace('2d Session', '2nd Session').replace('At the Second Session', '2nd Session'))
+                            session.append(''.join(elem.text.replace('At the First Session', '1st').replace('1st Session', '1st').replace(' 2d Session', '2nd').replace('2d Session', '2nd').replace(' 2nd Session', '2nd').replace('2d  Session', '2nd').replace('At the Second Session', '2nd')))
                         except AttributeError:
                             print('sres-session')
                             continue
                 elif elem.tag == 'session' or elem.tag == 'engrossed-amendment-form' and event == 'end':
                     if elem.tag == 'session':
                         try:
-                            session.append(elem.text.replace(
-                                'At the First Session', '1st Session').replace('2d Session', '2nd Session').replace('At the Second Session', '2nd Session'))
+                            session.append(''.join(elem.text.replace('At the First Session', '1st').replace('1st Session', '1st').replace(' 2d Session', '2nd').replace('2d Session', '2nd').replace(' 2nd Session', '2nd').replace('2d  Session', '2nd').replace('At the Second Session', '2nd')))
                         except AttributeError:
                             print('sres-session')
                             continue
                     elem.clear
     remove_files(xml_files)
     remove_files(zip_files)
+    csv_file(number, session, stage)
 
 
-def read_xml_s(xml_files, type):
+def read_xml_s(xml_files, type, number, session, stage):
     xml_files = glob.glob('BILLS-115s*.xml')
     zip_files = glob.glob('BILLS-115-?-s.zip')
-    global number
-    global session
-    global stage
-    global text
     for x in xml_files:
         with open(x, 'r', encoding='utf8') as s_xml:
             for event, elem in ET.iterparse(s_xml):
@@ -496,16 +458,14 @@ def read_xml_s(xml_files, type):
                 elif elem.tag == 'session' or elem.tag == 'form' and event == 'end':
                     if elem.tag == 'session':
                         try:
-                            session.append(elem.text.replace(
-                                'At the First Session', '1st Session').replace('2d Session', '2nd Session').replace('At the Second Session', '2nd Session'))
+                            session.append(''.join(elem.text.replace('At the First Session', '1st').replace('1st Session', '1st').replace(' 2d Session', '2nd').replace('2d Session', '2nd').replace(' 2nd Session', '2nd').replace('2d  Session', '2nd').replace('At the Second Session', '2nd')))
                         except AttributeError:
                             print('s-session')
                             continue
                 elif elem.tag == 'session' or elem.tag == 'engrossed-amendment-form' and event == 'end':
                     if elem.tag == 'session':
                         try:
-                            session.append(elem.text.replace(
-                                'At the First Session', '1st Session').replace('2d Session', '2nd Session').replace('At the Second Session', '2nd Session'))
+                            session.append(''.join(elem.text.replace('At the First Session', '1st').replace('1st Session', '1st').replace(' 2d Session', '2nd').replace('2d Session', '2nd').replace(' 2nd Session', '2nd').replace('2d  Session', '2nd').replace('At the Second Session', '2nd')))
                         except AttributeError:
                             print('s-session')
                             continue
@@ -520,19 +480,26 @@ def remove_files(file):
         os.remove(x)
 
 
+def csv_file(number, session, stage):
+    with open('BILLS.csv', 'a', newline='') as csvfile:
+        try:
+            writer = csv.writer(csvfile)
+            writer.writerow(['Number', 'Session', 'Stage'])
+            writer.writerows(zip(number, session, stage))
+        except Exception as e:
+            print e
+        finally
+            number = [:]
+            session = [:]
+            stage = [:]
+
+
 def push_to_db(whatever):
     success = bool
     if success:
         return 1
     else:
         return 0
-
-
-def csv_file(number, session, stage):
-    with open('BILLS.csv', 'w') as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerow(['Number', 'Session', 'Stage'])
-        # ???
 
 
 if __name__ == '__main__':
@@ -544,11 +511,9 @@ if __name__ == '__main__':
 #     print(n, value)
 # for n, value in enumerate(stage, 1):
 #     print(n, value)
-# BILLS_dict = dict(zip(number, stage))
-# for key, value in sorted(BILLS_dict.items()):
-#     print(key, value)
 # BILLS_list = zip(number, session, stage)
-# print(BILLS_list)
+# for b in BILLS_list:
+#     print(b)
 # print(len(number))
 # print(len(session))
 # print(len(stage))
