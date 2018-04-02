@@ -155,8 +155,8 @@ def parse_hconres(hconres_zips):
                     with open(x, 'r', encoding='utf8') as fulltext:
                         read_fulltext = fulltext.read()
                         root = ET.fromstring(read_fulltext)
-                        text = ''.join(root.itertext())
-                        print(text)
+                        text.append(''.join(root.itertext()))
+                        # print(text)
             remove_files(hconres_xmls)
             remove_files(hconres_zips)
             csv_file(number, session, stage, text)
@@ -239,8 +239,8 @@ def parse_hjres(hjres_zips):
                 with open(x, 'r', encoding='utf8') as fulltext:
                     read_fulltext = fulltext.read()
                     root = ET.fromstring(read_fulltext)
-                    text = ''.join(root.itertext())
-                    print(text)
+                    text.append(''.join(root.itertext()))
+                    # print(text)
             remove_files(hjres_xmls)
             remove_files(hjres_zips)
             csv_file(number, session, stage, text)
@@ -636,7 +636,7 @@ def csv_file(number, session, stage, text):
             writer = csv.writer(csvfile)
             writer.writerows(zip(number, session, stage, text))
         except Exception as e:
-            print(e)
+            print('%s: %s' % ('csv Exception', e))
         finally:
             number = []
             session = []
