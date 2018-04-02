@@ -95,15 +95,15 @@ def split_zips(zipfiles):
 
 
 def parse_hconres(hconres_zips):
-    number = []
-    session = []
-    stage = []
-    text = []
     for h in hconres_zips:
         with zipfile.ZipFile(h, 'r') as raw_zip:
             raw_zip.extractall()
             hconres_xmls = glob.glob('BILLS-115hconres*.xml')
             for x in hconres_xmls:
+                number = []
+                session = []
+                stage = []
+                text = []
                 with open(x, 'r', encoding='utf8') as hconres_file:
                     for event, elem in ET.iterparse(hconres_file):
                         if elem.tag == 'resolution':
@@ -152,19 +152,30 @@ def parse_hconres(hconres_zips):
                                 except AttributeError as e:
                                     print('%s: %s' % ('hconres-amdt-session', e))
                                     continue
-                        # elif elem.tag == 'resolution-body' or elem.tag == 'text' or elem.tag == 'title' or elem.tag == 'subtitle' or elem.tag == 'short-title' or elem.tag == 'chapter' or elem.tag == 'subchapter' or elem.tag == 'part' or elem.tag == 'subpart' or elem.tag == 'section' or elem.tag == 'subsection' or elem.tag == 'paragraph' or elem.tag == 'subparagraph' or elem.tag == 'clause' or elem.tag == 'subclause' or elem.tag == 'item' or elem.tag == 'subitem' or elem.tag == 'division' or elem.tag == 'enum' or elem.tag == 'quote' or elem.tag == 'quoted-block' or elem.tag == 'after-quoted-block' or elem.tag == 'term' or elem.tag == 'constitution-article' or elem.tag == 'continuation-text' or elem.tag == 'pagebreak' or elem.tag == 'header' or elem.tag == 'toc' or elem.tag == 'toc-entry' or elem.tag == 'list' or elem.tag == 'list-item' or elem.tag == 'editorial' or elem.tag == 'header-in-text' or elem.tag == 'italic' or elem.tag == 'external-xref':
-                        elif elem.tag == 'resolution-body':  # 242 True total(171 elem.text, 71 elem.tail)
-                            try:
-                                if elem.text is not None:
-                                    text.append(elem.text)
-                                elif elem.tail is not None:
-                                    text.append(elem.tail)
-                            except AttributeError as e:
-                                print('%s: %s' % ('hconres-text-session', e))
-                                continue
+                    with open(x, 'r', encoding='utf8') as fulltext:
+                        read_fulltext = fulltext.read()
+                        root = ET.fromstring(read_fulltext)
+                        text = ''.join(root.itertext())
+                        print(text)
             remove_files(hconres_xmls)
-    remove_files(hconres_zips)
-    csv_file(number, session, stage, text)
+            remove_files(hconres_zips)
+            csv_file(number, session, stage, text)
+
+
+# def gettext(elem):
+#     text = elem.text or ''
+#     for e in elem:
+#         text += gettext(e)
+#         if e.tail:
+#             text += e.tail
+#     print(text)
+
+
+def res_body_text(tag):
+    if ET.iselement(tag):
+        print('This is an element')
+    else:
+        print('This is not an element!')
 
 
 def parse_hjres(hjres_zips):
@@ -225,9 +236,14 @@ def parse_hjres(hjres_zips):
                                 except AttributeError as e:
                                     print('%s: %s' % ('hjres-amdt-session', e))
                                     continue
+                with open(x, 'r', encoding='utf8') as fulltext:
+                    read_fulltext = fulltext.read()
+                    root = ET.fromstring(read_fulltext)
+                    text = ''.join(root.itertext())
+                    print(text)
             remove_files(hjres_xmls)
-    remove_files(hjres_zips)
-    csv_file(number, session, stage, text)
+            remove_files(hjres_zips)
+            csv_file(number, session, stage, text)
 
 
 # def parse_hres(hres_zips):
