@@ -95,15 +95,15 @@ def split_zips(zipfiles):
 
 
 def parse_hconres(hconres_zips):
+    number = []
+    session = []
+    stage = []
+    text = []
     for h in hconres_zips:
         with zipfile.ZipFile(h, 'r') as raw_zip:
             raw_zip.extractall()
             hconres_xmls = glob.glob('BILLS-115hconres*.xml')
             for x in hconres_xmls:
-                number = []
-                session = []
-                stage = []
-                text = []
                 with open(x, 'r', encoding='utf8') as hconres_file:
                     for event, elem in ET.iterparse(hconres_file):
                         if elem.tag == 'resolution':
@@ -152,30 +152,13 @@ def parse_hconres(hconres_zips):
                                 except AttributeError as e:
                                     print('%s: %s' % ('hconres-amdt-session', e))
                                     continue
-                    with open(x, 'r', encoding='utf8') as fulltext:
-                        read_fulltext = fulltext.read()
-                        root = ET.fromstring(read_fulltext)
-                        text.append(''.join(root.itertext()))
-                        # print(text)
-            remove_files(hconres_xmls)
-            remove_files(hconres_zips)
-            csv_file(number, session, stage, text)
-
-
-# def gettext(elem):
-#     text = elem.text or ''
-#     for e in elem:
-#         text += gettext(e)
-#         if e.tail:
-#             text += e.tail
-#     print(text)
-
-
-def res_body_text(tag):
-    if ET.iselement(tag):
-        print('This is an element')
-    else:
-        print('This is not an element!')
+                with open(x, 'r', encoding='utf8') as fulltext:
+                    read_fulltext = fulltext.read()
+                    root = ET.fromstring(read_fulltext)
+                    text.append(''.join(root.itertext()))
+    remove_files(hconres_xmls)
+    remove_files(hconres_zips)
+    csv_file(number, session, stage, text)
 
 
 def parse_hjres(hjres_zips):
@@ -236,14 +219,13 @@ def parse_hjres(hjres_zips):
                                 except AttributeError as e:
                                     print('%s: %s' % ('hjres-amdt-session', e))
                                     continue
-                with open(x, 'r', encoding='utf8') as fulltext:
-                    read_fulltext = fulltext.read()
-                    root = ET.fromstring(read_fulltext)
-                    text.append(''.join(root.itertext()))
-                    # print(text)
-            remove_files(hjres_xmls)
-            remove_files(hjres_zips)
-            csv_file(number, session, stage, text)
+            with open(x, 'r', encoding='utf8') as fulltext:
+                read_fulltext = fulltext.read()
+                root = ET.fromstring(read_fulltext)
+                text.append(''.join(root.itertext()))
+    remove_files(hjres_xmls)
+    remove_files(hjres_zips)
+    csv_file(number, session, stage, text)
 
 
 # def parse_hres(hres_zips):
