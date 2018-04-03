@@ -152,11 +152,12 @@ def parse_hconres(hconres_zips):
                                 except AttributeError as e:
                                     print('%s: %s' % ('hconres-amdt-session', e))
                                     continue
-                with open(x, 'r', encoding='utf8') as fulltext:
-                    read_fulltext = fulltext.read()
-                    root = ET.fromstring(read_fulltext)
-                    text.append(''.join(root.itertext()))
-    remove_files(hconres_xmls)
+                    with open(x, 'r', encoding='utf8') as fulltext:
+                        read_text = fulltext.read()
+                        root = ET.fromstring(read_text)
+                        split_text = [line.split('\n') for line in root.itertext()]
+                        text.append(split_text)
+            remove_files(hconres_xmls)
     remove_files(hconres_zips)
     csv_file(number, session, stage, text)
 
@@ -176,14 +177,14 @@ def parse_hjres(hjres_zips):
                         if elem.tag == 'resolution':
                             try:
                                 stage.append(elem.get('resolution-stage').title().replace('-', ' '))
-                                elem.clear()
+                                # elem.clear()
                             except AttributeError as e:
                                 print('%s: %s' % ('hjres-stage', e))
                                 continue
                         elif elem.tag == 'amendment-doc':
                             try:
                                 stage.append(elem.get('amend-type').title().replace('-', ' '))
-                                elem.clear()
+                                # elem.clear()
                             except AttributeError as e:
                                 print('%s: %s' % ('hjres-amdt-stage', e))
                                 continue
@@ -219,11 +220,12 @@ def parse_hjres(hjres_zips):
                                 except AttributeError as e:
                                     print('%s: %s' % ('hjres-amdt-session', e))
                                     continue
-            with open(x, 'r', encoding='utf8') as fulltext:
-                read_fulltext = fulltext.read()
-                root = ET.fromstring(read_fulltext)
-                text.append(''.join(root.itertext()))
-    remove_files(hjres_xmls)
+                with open(x, 'r', encoding='utf8') as fulltext:
+                    read_text = fulltext.read()
+                    root = ET.fromstring(read_text)
+                    split_text = [line.split('\n') for line in root.itertext()]
+                    text.append(split_text)
+            remove_files(hjres_xmls)
     remove_files(hjres_zips)
     csv_file(number, session, stage, text)
 
@@ -637,15 +639,7 @@ def csv_file(number, session, stage, text):
 if __name__ == '__main__':
     main(sys.argv)
 
-# for n, value in enumerate(number, 1):
-#     print(n, value)
-# for n, value in enumerate(session, 1):
-#     print(n, value)
-# for n, value in enumerate(stage, 1):
-#     print(n, value)
-# BILLS_list = zip(number, session, stage)
-# for b in BILLS_list:
-#     print(b)
+
 # print('%s: %s' % ('# of Legislation', len(number)))
 # print('%s: %s' % ('# of Sessions', len(session)))
 # print('%s: %s' % ('# of Stages', len(stage)))
